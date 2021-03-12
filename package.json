@@ -1,0 +1,32 @@
+{
+  "name": "@mistakster/text-search",
+  "version": "1.0.0",
+  "description": "A library to filter array of objects by text content",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mistakster/text-search.git"
+  },
+  "keywords": [
+    "text",
+    "search",
+    "array",
+    "index",
+    "filter"
+  ],
+  "author": "Vladimir Kuznetsov <mistakster@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mistakster/text-search/issues"
+  },
+  "homepage": "https://github.com/mistakster/text-search#readme",
+  "dependencies": {
+    "ramda": "^0.27.1"
+  },
+  "devDependencies": {
+    "mocha": "8.3.1"
+  }
+}
