@@ -1,6 +1,6 @@
 {
   "name": "@mistakster/text-search",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A library to filter array of objects by text content",
   "main": "index.js",
   "scripts": {
