@@ -23,9 +23,7 @@
     "url": "https://github.com/mistakster/text-search/issues"
   },
   "homepage": "https://github.com/mistakster/text-search#readme",
-  "dependencies": {
-    "ramda": "^0.27.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "mocha": "8.3.1"
   }
