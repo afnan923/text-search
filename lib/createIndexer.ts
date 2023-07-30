@@ -1,12 +1,18 @@
 import { SearchIndex } from "./searchIndex";
+import { isArray, isString } from "./utils";
+import { Field, ItemToSearch } from "./types";
 
-export function createIndexer(field: string | string[], displayField?: string) {
-  const firstField = Array.isArray(field) ? field[0] : field;
-  const display = typeof displayField !== 'string' ? firstField : displayField;
+export function createIndexer(field: Field, displayField?: string) {
+  const firstField = isArray(field) ? field[0] : field;
+  const displayOrFirstField = isString(displayField) ? displayField : firstField;
 
-  return (arr: readonly Record<string, string>[]) => arr.reduce((hash, item) => {
-    hash.set(item, new SearchIndex(item, field, display));
+  return <T extends ItemToSearch>(list: ReadonlyArray<T>) => {
+    const map = new WeakMap<T, SearchIndex<T>>();
 
-    return hash;
-  }, new WeakMap<Record<string, string>, SearchIndex>());
+    for (let i = list.length - 1; i >= 0; i--) {
+      map.set(list[i], new SearchIndex(list[i], field, displayOrFirstField));
+    }
+
+    return map;
+  };
 }

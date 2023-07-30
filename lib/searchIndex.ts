@@ -1,28 +1,38 @@
 import { tokenize } from "./tokenize";
+import { isArray, isString } from "./utils";
+import { Field, ItemToSearch } from "./types";
 
-export class SearchIndex {
-  readonly values: string[];
+export class SearchIndex<T extends ItemToSearch> {
+  private readonly tokens: string[] = [];
 
-  readonly tokens: string[];
+  private readonly values: string[] = [];
 
-  private _displayField: string;
+  private readonly displayValue: string = '';
 
-  constructor(item: Record<string, string>, field: string | string[], displayField?: string) {
-    this.values = (Array.isArray(field) ? field : [field]).map(k => item[k]);
-    this.tokens = [];
+  constructor(item: T, field: Field, displayField?: string) {
+    const fields = isArray(field) ? field : [field];
 
-    for (let i = 0; i < this.values.length; i++) {
-      const tokens = tokenize(this.values[i]);
+    for (let i = 0; i < fields.length; i++) {
+      const value = item[fields[i]];
 
-      for (let j = 0; j < tokens.length; j++) {
-        this.tokens.push(tokens[j]);
+      if (!isString(value)) {
+        break;
       }
+
+      this.values.push(value);
+      this.tokens.push(...tokenize(value));
     }
 
-    this._displayField = (item[typeof displayField === 'string' ? displayField : ''] || '').toLowerCase();
+    if (isString(displayField)) {
+      const value = item[displayField];
+
+      if (isString(value)) {
+        this.displayValue = value.toLowerCase();
+      }
+    }
   }
 
-  compareWith(target: SearchIndex): -1 | 0 | 1 {
+  compareWith(target: SearchIndex<T>): -1 | 0 | 1 {
     const valuesA = this.values;
     const valuesB = target.values;
 
@@ -35,11 +45,11 @@ export class SearchIndex {
     return 0;
   }
 
-  findTokenIndex(queryToken: string) {
-    return this.tokens.findIndex(token => token.indexOf(queryToken) === 0);
+  hasToken(queryToken: string) {
+    return this.tokens.findIndex(token => token.indexOf(queryToken) === 0) >= 0;
   }
 
-  getPositionOf(query: string) {
-    return this._displayField.indexOf(query);
+  findPosition(queryToken: string) {
+    return this.displayValue.indexOf(queryToken);
   }
 }

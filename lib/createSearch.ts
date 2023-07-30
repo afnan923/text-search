@@ -1,29 +1,22 @@
 import { tokenize } from "./tokenize";
 import { createIndexer } from "./createIndexer";
 import type { SearchIndex } from "./searchIndex";
+import { Field, ItemToSearch } from "./types";
 
-type SearchTuple = [number, SearchIndex, Record<string, string>];
+type SearchTuple<T extends ItemToSearch> = [number, SearchIndex<T>, T];
 
-function comparator(ta: SearchTuple, tb: SearchTuple) {
-  if (ta[0] === tb[0]) {
-    return ta[1].compareWith(tb[1]);
-  }
-
-  return ta[0] > tb[0] ? 1 : -1;
-}
-
-export function createSearch(field: string | string[], displayField?: string) {
+export function createSearch(field: Field, displayField?: string) {
   const indexer = createIndexer(field, displayField);
 
-  return (arr: readonly Record<string, string>[]) => {
-    const indexHash = indexer(arr);
+  return <T extends ItemToSearch>(list: ReadonlyArray<T>) => {
+    const indexHash = indexer(list);
 
     return (query: string) => {
       const queryTokens = tokenize(query);
-      const temp: SearchTuple[] = [];
+      const temp: SearchTuple<T>[] = [];
 
-      for (let j = 0; j < arr.length; j++) {
-        const item = arr[j];
+      for (let j = 0; j < list.length; j++) {
+        const item = list[j];
         const searchIndex = indexHash.get(item);
 
         if (!searchIndex) {
@@ -34,17 +27,18 @@ export function createSearch(field: string | string[], displayField?: string) {
         let rel = Infinity;
 
         for (let i = 0; i < queryTokens.length; i++) {
-          const qt = queryTokens[i];
-          const tIndex = searchIndex.findTokenIndex(qt);
+          const token = queryTokens[i];
 
-          if (tIndex < 0) {
+          if (!searchIndex.hasToken(token)) {
+            // we need all tokens to be present in the fields
             found = false;
             break;
           }
 
-          const pos = searchIndex.getPositionOf(qt);
+          const pos = searchIndex.findPosition(token);
 
           if (pos > -1) {
+            // increase relevance for the items with the token in the displayField
             rel = Math.min(pos, rel);
           }
         }
@@ -54,7 +48,13 @@ export function createSearch(field: string | string[], displayField?: string) {
         }
       }
 
-      temp.sort(comparator);
+      temp.sort((ta, tb) => {
+        if (ta[0] === tb[0]) {
+          return ta[1].compareWith(tb[1]);
+        }
+
+        return ta[0] > tb[0] ? 1 : -1;
+      });
 
       return temp.map(tuple => tuple[2]);
     };

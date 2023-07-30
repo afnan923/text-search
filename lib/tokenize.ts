@@ -1,9 +1,7 @@
-function isValueString(value: any): value is string {
-  return typeof value === 'string';
-}
+import { isArray, isString } from "./utils";
 
 export function tokenize(value: string): string[] {
-  if (!isValueString(value)) {
+  if (!isString(value)) {
     return [];
   }
 
@@ -11,5 +9,5 @@ export function tokenize(value: string): string[] {
     .toLowerCase()
     .replace(/["']/g, '')
     .split(/\W+/)
-    .filter(Boolean);
+    .filter((part) => part.length > 0);
 }
