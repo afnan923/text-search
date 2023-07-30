@@ -25,4 +25,14 @@ describe('search', () => {
     const result2 = search('the');
     deepStrictEqual(result2, [fixture[1], fixture[2], fixture[0]]);
   });
+
+  it('should work for the display field', () => {
+    const search = createSearch(['title', 'description'], 'description')(fixture);
+
+    const result1 = search('Jedi');
+    deepStrictEqual(result1, [fixture[0], fixture[1], fixture[2]]);
+
+    const result2 = search('the');
+    deepStrictEqual(result2, [fixture[1], fixture[2], fixture[0]]);
+  });
 });
