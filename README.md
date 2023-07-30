@@ -3,7 +3,7 @@
 Example
 
 ```
-import createSearch from 'text-search';
+import createSearch from '@mistakster/text-search';
 
 const indexer = createSearch('title'); // ['title', 'description']
 
