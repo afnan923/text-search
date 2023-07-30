@@ -2,7 +2,8 @@
   "name": "@mistakster/text-search",
   "version": "1.0.1",
   "description": "A library to filter an array of objects by text content",
-  "main": "index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "prepublish": "tsc",
     "test": "mocha"

@@ -1,3 +1,7 @@
 .idea
 .editorconfig
-test
+.mocharc.json
+/test
+/lib
+/index.ts
+tsconfig.json
