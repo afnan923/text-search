@@ -1,57 +1,51 @@
-const assert = require('assert');
-const buildTokens = require('../lib/buildItemIndex');
-const fixture = require('./fixture.json');
+import { deepStrictEqual, notDeepStrictEqual } from "node:assert";
+import { SearchIndex } from "../lib/searchIndex";
+import { fixture } from "./fixture";
 
-describe('createIndex', () => {
+describe('SearchIndex', () => {
   it('should compare itself with another tokens', () => {
-    const a = buildTokens({
-      title: 'Foo',
-      description: 'Bar'
-    }, ['title', 'description']);
-    const b = buildTokens({
-      title: 'Foo',
-      description: 'Bar'
-    }, ['title', 'description']);
-    const c = buildTokens({
-      title: 'Foo 1',
-      description: 'Bar'
-    }, ['title', 'description'],);
-    const d = buildTokens({
-      title: 'Foo',
-      description: 'Bar 1'
-    }, ['title', 'description']);
+    const a = { title: 'Foo', description: 'Bar' };
+    const b = { title: 'Foo 1', description: 'Bar' };
+    const c = { title: 'Foo', description: 'Bar 1' };
 
-    assert.deepStrictEqual(a.compareWith(b), 0);
-    assert.deepStrictEqual(a.compareWith(c), -1);
-    assert.deepStrictEqual(a.compareWith(d), -1);
-    assert.deepStrictEqual(a.compareWith(d), -1);
-    assert.deepStrictEqual(c.compareWith(d), 1);
-    assert.deepStrictEqual(d.compareWith(a), 1);
+    const fields = ['title', 'description'];
+
+    deepStrictEqual(new SearchIndex(a, fields).compareWith(new SearchIndex(a, fields)), 0);
+    deepStrictEqual(new SearchIndex(a, fields).compareWith(new SearchIndex(b, fields)), -1);
+    deepStrictEqual(new SearchIndex(a, fields).compareWith(new SearchIndex(c, fields)), -1);
+
+    deepStrictEqual(new SearchIndex(b, fields).compareWith(new SearchIndex(a, fields)), 1);
+    deepStrictEqual(new SearchIndex(b, fields).compareWith(new SearchIndex(b, fields)), 0);
+    deepStrictEqual(new SearchIndex(b, fields).compareWith(new SearchIndex(c, fields)), 1);
+
+    deepStrictEqual(new SearchIndex(c, fields).compareWith(new SearchIndex(a, fields)), 1);
+    deepStrictEqual(new SearchIndex(c, fields).compareWith(new SearchIndex(b, fields)), -1);
+    deepStrictEqual(new SearchIndex(c, fields).compareWith(new SearchIndex(c, fields)), 0);
   });
 
   it('should work for a single field', () => {
-    const tokens1 = buildTokens(fixture[0], 'title');
-    assert.deepStrictEqual(
+    const tokens1 = new SearchIndex(fixture[0], 'title');
+    deepStrictEqual(
       tokens1.tokens,
       ['star', 'wars', 'episode', 'iv', 'a', 'new', 'hope']
     );
 
-    const tokens2 = buildTokens(fixture[1], 'title');
-    assert.deepStrictEqual(
+    const tokens2 = new SearchIndex(fixture[1], 'title');
+    deepStrictEqual(
       tokens2.tokens,
       ['star', 'wars', 'episode', 'v', 'the', 'empire', 'strikes', 'back']
     );
 
-    const tokens3 = buildTokens(fixture[2], 'title');
-    assert.deepStrictEqual(
+    const tokens3 = new SearchIndex(fixture[2], 'title');
+    deepStrictEqual(
       tokens3.tokens,
       ['star', 'wars', 'episode', 'vi', 'return', 'of', 'the', 'jedi']
     );
   });
 
   it('should work for the multiple fields', () => {
-    assert.deepStrictEqual(
-      buildTokens(fixture[0], ['title', 'description']).tokens,
+    deepStrictEqual(
+      new SearchIndex(fixture[0], ['title', 'description']).tokens,
       [
         'star', 'wars', 'episode', 'iv',
         'a', 'new', 'hope', 'luke',
@@ -67,8 +61,8 @@ describe('createIndex', () => {
         'darth', 'vader'
       ]
     );
-    assert.deepStrictEqual(
-      buildTokens(fixture[1], ['title', 'description']).tokens,
+    deepStrictEqual(
+      new SearchIndex(fixture[1], ['title', 'description']).tokens,
       [
         'star', 'wars', 'episode', 'v',
         'the', 'empire', 'strikes', 'back',
@@ -84,8 +78,8 @@ describe('createIndex', () => {
         'all', 'over', 'the', 'galaxy'
       ]
     );
-    assert.deepStrictEqual(
-      buildTokens(fixture[2], ['title', 'description']).tokens,
+    deepStrictEqual(
+      new SearchIndex(fixture[2], ['title', 'description']).tokens,
       [
         'star', 'wars', 'episode', 'vi',
         'return', 'of', 'the', 'jedi',
@@ -101,6 +95,13 @@ describe('createIndex', () => {
         'falling', 'into', 'the', 'emperors',
         'trap'
       ]
+    );
+  });
+
+  it('should reflect the order of the fields', () => {
+    notDeepStrictEqual(
+      new SearchIndex(fixture[0], ['title', 'description']).tokens,
+      new SearchIndex(fixture[0], ['description', 'title']).tokens,
     );
   });
 });

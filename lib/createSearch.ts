@@ -1,7 +1,10 @@
-const tokenize = require('./tokenize');
-const createIndexer = require('./createIndexer');
+import { tokenize } from "./tokenize";
+import { createIndexer } from "./createIndexer";
+import type { SearchIndex } from "./searchIndex";
 
-function comparator(ta, tb) {
+type SearchTuple = [number, SearchIndex, Record<string, string>];
+
+function comparator(ta: SearchTuple, tb: SearchTuple) {
   if (ta[0] === tb[0]) {
     return ta[1].compareWith(tb[1]);
   }
@@ -9,36 +12,37 @@ function comparator(ta, tb) {
   return ta[0] > tb[0] ? 1 : -1;
 }
 
-function createSearch(field, displayField) {
+export function createSearch(field: string | string[], displayField?: string) {
   const indexer = createIndexer(field, displayField);
 
-  return (arr) => {
+  return (arr: readonly Record<string, string>[]) => {
     const indexHash = indexer(arr);
 
-    return (query) => {
+    return (query: string) => {
       const queryTokens = tokenize(query);
-
-      const temp = [];
+      const temp: SearchTuple[] = [];
 
       for (let j = 0; j < arr.length; j++) {
         const item = arr[j];
-        const itemIndex = indexHash.get(item);
+        const searchIndex = indexHash.get(item);
+
+        if (!searchIndex) {
+          break;
+        }
 
         let found = true;
         let rel = Infinity;
 
         for (let i = 0; i < queryTokens.length; i++) {
           const qt = queryTokens[i];
-          const tIndex = itemIndex.tokens.findIndex(token => {
-            return token.indexOf(qt) === 0;
-          });
+          const tIndex = searchIndex.findTokenIndex(qt);
 
           if (tIndex < 0) {
             found = false;
             break;
           }
 
-          const pos = itemIndex.getPositionOf(qt);
+          const pos = searchIndex.getPositionOf(qt);
 
           if (pos > -1) {
             rel = Math.min(pos, rel);
@@ -46,7 +50,7 @@ function createSearch(field, displayField) {
         }
 
         if (found) {
-          temp.push([rel, itemIndex, item]);
+          temp.push([rel, searchIndex, item]);
         }
       }
 
@@ -56,5 +60,3 @@ function createSearch(field, displayField) {
     };
   };
 }
-
-module.exports = createSearch;
