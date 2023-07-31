@@ -26,12 +26,12 @@ describe('SearchIndex', () => {
         fc.record({
           title: fc.stringOf(fc.mixedCase(fc.hexa())),
           description: fc.stringOf(fc.mixedCase(fc.hexa())),
-          delta: fc.stringOf(fc.mixedCase(fc.hexa()), { minLength: 1 })
         }),
-        (obj) => {
+        fc.stringOf(fc.mixedCase(fc.hexa()), { minLength: 1 }),
+        (obj, delta) => {
           const obj2 = {
             ...obj,
-            title: obj.title + obj.delta
+            title: obj.title + delta
           };
 
           const index1 = new SearchIndex(obj, ['title', 'description']);
@@ -49,13 +49,13 @@ describe('SearchIndex', () => {
       fc.property(
         fc.record({
           title: fc.stringOf(fc.mixedCase(fc.hexa())),
-          description: fc.stringOf(fc.mixedCase(fc.hexa())),
-          delta: fc.stringOf(fc.mixedCase(fc.hexa()), { minLength: 1 })
+          description: fc.stringOf(fc.mixedCase(fc.hexa()))
         }),
-        (obj) => {
+        fc.stringOf(fc.mixedCase(fc.hexa()), { minLength: 1 }),
+        (obj, delta) => {
           const obj2 = {
             ...obj,
-            description: obj.description + obj.delta
+            description: obj.description + delta
           };
 
           const index1 = new SearchIndex(obj, ['title', 'description']);

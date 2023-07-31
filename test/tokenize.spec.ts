@@ -55,16 +55,14 @@ describe("tokenize", () => {
   it("should ignore quotes while tokenizing", () => {
     fc.assert(
       fc.property(
-        fc.record({
-          tuple: fc.tuple(
-            fc.stringOf(fc.mixedCase(fc.hexa()), { minLength: 1 }),
-            fc.stringOf(fc.mixedCase(fc.hexa()), { minLength: 1 })
-          ),
-          delimiter: fc.stringOf(fc.constantFrom('"', '\''), { minLength: 1, maxLength: 1 })
-        }),
-        (input) => {
-          const result = tokenize(input.tuple.join(input.delimiter));
-          deepStrictEqual(result, [input.tuple.join('').toLowerCase()]);
+        fc.tuple(
+          fc.stringOf(fc.mixedCase(fc.hexa()), { minLength: 1 }),
+          fc.stringOf(fc.mixedCase(fc.hexa()), { minLength: 1 })
+        ),
+        fc.stringOf(fc.constantFrom('"', '\''), { minLength: 1, maxLength: 1 }),
+        (tuple, delimiter) => {
+          const result = tokenize(tuple.join(delimiter));
+          deepStrictEqual(result, [tuple.join('').toLowerCase()]);
         }
       )
     );
