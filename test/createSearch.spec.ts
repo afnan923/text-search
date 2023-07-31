@@ -1,7 +1,7 @@
-import { deepStrictEqual } from "node:assert";
-import fc, { array } from 'fast-check';
-import { createSearch } from "../lib/createSearch";
-import { fixture } from "./fixture";
+import { deepStrictEqual } from 'node:assert';
+import fc from 'fast-check';
+import { createSearch } from '../lib/createSearch';
+import { fixture } from './fixture';
 
 describe('search', () => {
   it('should work', () => {
@@ -24,12 +24,12 @@ describe('search', () => {
               (query) => {
                 const result = search(query);
                 const rx = new RegExp(`\\b(${query}\\w*)\\b`);
-                const expected = list.filter(item => rx.test(item.title)).length
+                const expected = list.filter(item => rx.test(item.title)).length;
 
                 deepStrictEqual(result.length, expected);
               }
             )
-          )
+          );
         }
       )
     );

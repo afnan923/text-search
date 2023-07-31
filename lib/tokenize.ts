@@ -1,4 +1,4 @@
-import { isArray, isString } from "./utils";
+import { isString } from './utils';
 
 export function tokenize(value: string): string[] {
   if (!isString(value)) {

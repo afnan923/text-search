@@ -1,6 +1,6 @@
-import { tokenize } from "./tokenize";
-import { isArray, isString } from "./utils";
-import { Field, ItemToSearch } from "./types";
+import { tokenize } from './tokenize';
+import { isArray, isString } from './utils';
+import { Field, ItemToSearch } from './types';
 
 export class SearchIndex<T extends ItemToSearch> {
   private readonly tokens: string[] = [];

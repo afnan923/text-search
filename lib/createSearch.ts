@@ -1,7 +1,7 @@
-import { tokenize } from "./tokenize";
-import { createIndexer } from "./createIndexer";
-import type { SearchIndex } from "./searchIndex";
-import { Field, ItemToSearch } from "./types";
+import { tokenize } from './tokenize';
+import { createIndexer } from './createIndexer';
+import type { SearchIndex } from './searchIndex';
+import { Field, ItemToSearch } from './types';
 
 type SearchTuple<T extends ItemToSearch> = [number, SearchIndex<T>, T];
 

@@ -1,12 +1,12 @@
-import { deepStrictEqual } from "node:assert";
+import { deepStrictEqual } from 'node:assert';
 import fc from 'fast-check';
-import { tokenize } from "../lib/tokenize";
+import { tokenize } from '../lib/tokenize';
 
-describe("tokenize", () => {
-  it("should tokenize empty string and return an empty array", () => {
+describe('tokenize', () => {
+  it('should tokenize empty string and return an empty array', () => {
     fc.assert(
       fc.property(
-        fc.constant(""),
+        fc.constant(''),
         (input) => {
           const result = tokenize(input);
           deepStrictEqual(result, []);
@@ -15,7 +15,7 @@ describe("tokenize", () => {
     );
   });
 
-  it("should tokenize strings with only special characters and return an empty array", () => {
+  it('should tokenize strings with only special characters and return an empty array', () => {
     fc.assert(
       fc.property(
         fc.stringOf(fc.stringMatching(/^\W+$/), { minLength: 1 }),
@@ -27,7 +27,7 @@ describe("tokenize", () => {
     );
   });
 
-  it("should tokenize strings with alpha-numeric characters", () => {
+  it('should tokenize strings with alpha-numeric characters', () => {
     fc.assert(
       fc.property(
         fc.stringOf(fc.stringMatching(/^\w+$/), { minLength: 1 }),
@@ -39,7 +39,7 @@ describe("tokenize", () => {
     );
   });
 
-  it("should tokenize strings with multiple spaces", () => {
+  it('should tokenize strings with multiple spaces', () => {
     fc.assert(
       fc.property(
         fc.stringOf(fc.stringMatching(/^\w+$/), { minLength: 1 }),
@@ -52,7 +52,7 @@ describe("tokenize", () => {
     );
   });
 
-  it("should ignore quotes while tokenizing", () => {
+  it('should ignore quotes while tokenizing', () => {
     fc.assert(
       fc.property(
         fc.tuple(
@@ -68,7 +68,7 @@ describe("tokenize", () => {
     );
   });
 
-  it("should tokenize text", () => {
+  it('should tokenize text', () => {
     fc.assert(
       fc.property(
         fc.lorem(),
@@ -77,6 +77,6 @@ describe("tokenize", () => {
           deepStrictEqual(result, input.split(/\s+/));
         }
       )
-    )
+    );
   });
 });

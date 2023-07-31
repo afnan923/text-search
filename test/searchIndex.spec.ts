@@ -1,6 +1,6 @@
-import { deepStrictEqual, notDeepStrictEqual } from "node:assert";
-import fc from "fast-check";
-import { SearchIndex } from "../lib/searchIndex";
+import { deepStrictEqual } from 'node:assert';
+import fc from 'fast-check';
+import { SearchIndex } from '../lib/searchIndex';
 
 describe('SearchIndex', () => {
   it('should compare two equal indexes', () => {
@@ -25,7 +25,7 @@ describe('SearchIndex', () => {
       fc.property(
         fc.record({
           title: fc.stringOf(fc.mixedCase(fc.hexa())),
-          description: fc.stringOf(fc.mixedCase(fc.hexa())),
+          description: fc.stringOf(fc.mixedCase(fc.hexa()))
         }),
         fc.stringOf(fc.mixedCase(fc.hexa()), { minLength: 1 }),
         (obj, delta) => {

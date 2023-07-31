@@ -1,6 +1,6 @@
-import { SearchIndex } from "./searchIndex";
-import { isArray, isString } from "./utils";
-import { Field, ItemToSearch } from "./types";
+import { SearchIndex } from './searchIndex';
+import { isArray, isString } from './utils';
+import { Field, ItemToSearch } from './types';
 
 export function createIndexer(field: Field, displayField?: string) {
   const firstField = isArray(field) ? field[0] : field;
